@@ -1,6 +1,6 @@
 import express from 'express';
 import { getPosts, createPost, updatePost, deletePost } from '../controllers/postController';
-import { authMiddleware } from '../middlewares/authMiddleware'; // ✅ Тепер імпорт правильний
+import { authMiddleware } from '../middlewares/authMiddleware';
 
 const router = express.Router();
 

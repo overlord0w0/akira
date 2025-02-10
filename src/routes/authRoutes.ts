@@ -1,11 +1,12 @@
 import { Router } from 'express';
-import { register, login, logout } from '../controllers/authController';
-import { AuthRequest } from '../types/express-session.d';
+import { getUsers, getUserById, deleteUser, updateUser } from '../controllers/userController';
+import { authMiddleware } from '../middlewares/authMiddleware';
 
 const router = Router();
 
-router.post('/register', (req: AuthRequest, res) => register(req, res));
-router.post('/login', (req: AuthRequest, res) => login(req, res));
-router.post('/logout', (req: AuthRequest, res) => logout(req, res));
+router.get('/', authMiddleware, getUsers);
+router.get('/:id', authMiddleware, getUserById);
+router.put('/:id', authMiddleware, updateUser);
+router.delete('/:id', authMiddleware, deleteUser);
 
 export default router;

@@ -1,6 +1,6 @@
 import { Response } from "express";
-import Post from "../models/postModel";
-import { AuthRequest } from "../middlewares/authMiddleware"; // Імпортуємо правильний тип
+import { Post }  from "../models/postModel";
+import { AuthRequest } from "../middlewares/authMiddleware";
 
 export const getPosts = async (req: AuthRequest, res: Response) => {
     try {

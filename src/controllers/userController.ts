@@ -1,9 +1,8 @@
 import { Request, Response } from 'express';
-import { User } from '../models/UserModel';
+import { User } from '../models/userModel';
+import { AuthRequest } from '../middlewares/authMiddleware';
 
-import { AuthRequest } from '../types/express-session'; // Правильна типізація req.user
-
-export const getUsers = async (req: Request, res: Response) => {
+export const getUsers = async (req: AuthRequest, res: Response) => {
     try {
         const users = await User.find({}, '-password');
         res.json(users);
