@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
-import User from '../models/UserModel';
+import { User } from '../models/UserModel';
 import { AuthRequest } from '../types/express-session';
 import { Document } from 'mongoose';
 
@@ -33,13 +33,19 @@ export const login = async (req: AuthRequest, res: Response) => {
         const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) return res.status(400).json({ error: 'Invalid credentials' });
 
-        const userId = user._id; // ✅ Тепер _id має правильний тип
+        const userId = user._id.toString(); // ✅ Конвертуємо _id у string
 
         const token = jwt.sign({ id: userId, email: user.email }, process.env.JWT_SECRET as string, {
             expiresIn: '1h',
         });
 
-        req.session.userId = userId;
+        // ✅ Переконуємось, що req.session.user існує
+        if (!req.session.user) {
+            req.session.user = { id: userId };
+        } else {
+            req.session.user.id = userId;
+        }
+
         res.json({ token, message: 'Login successful' });
     } catch (error) {
         res.status(500).json({ error: 'Login failed' });

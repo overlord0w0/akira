@@ -1,5 +1,5 @@
 import bcrypt from 'bcryptjs';
-import User from '../models/userModel';
+import { User } from '../models/UserModel';
 import { generateToken } from '../utils/jwt';
 
 export const registerUser = async (email: string, password: string) => {

@@ -12,6 +12,6 @@
     "resolveJsonModule": true, // Дозволити імпорт JSON файлів
     "typeRoots": ["./src/types", "./node_modules/@types"]
   },
-  "include": ["src/**/*"], // Включаємо всі файли у папці src
+  "include": ["src"], // Включаємо всі файли у папці src
   "exclude": ["node_modules"] // Виключаємо папку node_modules
 }

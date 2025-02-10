@@ -1,6 +1,7 @@
-// src/controllers/userController.ts
 import { Request, Response } from 'express';
-import User from '../models/UserModel';
+import { User } from '../models/UserModel';
+
+import { AuthRequest } from '../types/express-session'; // Правильна типізація req.user
 
 export const getUsers = async (req: Request, res: Response) => {
     try {
@@ -21,9 +22,11 @@ export const getUserById = async (req: Request, res: Response) => {
     }
 };
 
-export const updateUser = async (req: Request, res: Response) => {
+export const updateUser = async (req: AuthRequest, res: Response) => {
     try {
-        if (req.user.id !== req.params.id) return res.status(403).json({ error: 'Unauthorized' });
+        if (!req.session.user || req.session.user.id !== req.params.id) {
+            return res.status(403).json({ error: 'Unauthorized' });
+        }
 
         const updatedUser = await User.findByIdAndUpdate(req.params.id, req.body, { new: true });
         res.json(updatedUser);
@@ -32,9 +35,11 @@ export const updateUser = async (req: Request, res: Response) => {
     }
 };
 
-export const deleteUser = async (req: Request, res: Response) => {
+export const deleteUser = async (req: AuthRequest, res: Response) => {
     try {
-        if (req.user.id !== req.params.id) return res.status(403).json({ error: 'Unauthorized' });
+        if (!req.session.user || req.session.user.id !== req.params.id) {
+            return res.status(403).json({ error: 'Unauthorized' });
+        }
 
         await User.findByIdAndDelete(req.params.id);
         res.json({ message: 'User deleted' });

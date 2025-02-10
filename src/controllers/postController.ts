@@ -1,7 +1,8 @@
-import { Request, Response } from "express";
+import { Response } from "express";
 import Post from "../models/postModel";
+import { AuthRequest } from "../middlewares/authMiddleware"; // Імпортуємо правильний тип
 
-export const getPosts = async (req: Request, res: Response) => {
+export const getPosts = async (req: AuthRequest, res: Response) => {
     try {
         const posts = await Post.find().populate("userId", "name");
         res.json(posts);
@@ -10,7 +11,7 @@ export const getPosts = async (req: Request, res: Response) => {
     }
 };
 
-export const createPost = async (req: Request, res: Response) => {
+export const createPost = async (req: AuthRequest, res: Response) => {
     const { text } = req.body;
 
     if (!req.user) {
@@ -26,7 +27,7 @@ export const createPost = async (req: Request, res: Response) => {
     }
 };
 
-export const updatePost = async (req: Request, res: Response) => {
+export const updatePost = async (req: AuthRequest, res: Response) => {
     if (!req.user) {
         return res.status(401).json({ error: "Unauthorized" });
     }
@@ -43,7 +44,7 @@ export const updatePost = async (req: Request, res: Response) => {
     }
 };
 
-export const deletePost = async (req: Request, res: Response) => {
+export const deletePost = async (req: AuthRequest, res: Response) => {
     if (!req.user) {
         return res.status(401).json({ error: "Unauthorized" });
     }

@@ -1,12 +1,12 @@
-import 'express-session';
 import { Request } from 'express';
+import session from 'express-session';
 
 declare module 'express-session' {
     interface SessionData {
-        userId?: string;
+        user?: { id: string };
     }
 }
 
 export interface AuthRequest extends Request {
-    session: SessionData;
+    session: session.Session & Partial<session.SessionData>;
 }
