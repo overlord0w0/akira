@@ -1,26 +1,25 @@
-import { Request, Response, NextFunction } from "express";
-import jwt from "jsonwebtoken";
-import { JWT_SECRET } from "../config/env";
+import { Request, Response, NextFunction } from 'express';
+import jwt, { JwtPayload } from 'jsonwebtoken';
 
-interface CustomJwtPayload extends jwt.JwtPayload {
-    id: string;
+export interface AuthRequest extends Request {
+    user?: JwtPayload | string;
 }
 
-export const authMiddleware = (
-    req: Request,
-    res: Response,
-    next: NextFunction
-) => {
-    const token = req.header("Authorization")?.replace("Bearer ", "");
-    if (!token) {
-        return res.status(401).json({ error: "Access denied" });
-    }
+export const authenticateToken = (req: AuthRequest, res: Response, next: NextFunction) => {
+    const authHeader = req.header('Authorization');
+    if (!authHeader) return res.status(401).json({ message: 'Unauthorized' });
+
+    const token = authHeader.split(' ')[1]; // Розділення "Bearer TOKEN"
+    if (!token) return res.status(401).json({ message: 'Unauthorized' });
 
     try {
-        const decoded = jwt.verify(token, JWT_SECRET) as CustomJwtPayload;
-        req.user = decoded; // ✅ req.user тепер точно має id
+        const secret = process.env.JWT_SECRET;
+        if (!secret) throw new Error('JWT_SECRET is not defined');
+
+        const decoded = jwt.verify(token, secret) as JwtPayload;
+        req.user = decoded;
         next();
-    } catch (error) {
-        res.status(401).json({ error: "Invalid token" });
+    } catch (err) {
+        res.status(403).json({ message: 'Invalid token' });
     }
 };

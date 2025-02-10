@@ -1,12 +1,7 @@
-import { JwtPayload } from "jsonwebtoken";
-import { Request } from "express";
+import 'express-session';
 
-interface CustomJwtPayload extends JwtPayload {
-    id: string; // Явно додаємо id
-}
-
-declare module "express-serve-static-core" {
-    interface Request {
-        user?: CustomJwtPayload; // req.user тепер має id
+declare module 'express-session' {
+    interface SessionData {
+        userId?: string;
     }
 }
